@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class HelloJobConfiguration {
     
     private final JobRepository jobRepository;
-    private PlatformTransactionManager platformTransactionManager;
+    private final PlatformTransactionManager platformTransactionManager;
 
 
     @Bean
