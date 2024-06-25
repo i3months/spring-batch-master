@@ -3,7 +3,6 @@ spring:
     active: mysql
 
 ---
-
 spring:
   config:
     activate:
@@ -13,9 +12,11 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+  batch:
+    jdbc:
+      initialize-schema: always
 
 ---
-
 spring:
   config:
     activate:
@@ -25,6 +26,6 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
-  batch:
+  batch:    
     jdbc:
       initialize-schema: always

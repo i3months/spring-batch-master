@@ -4,6 +4,7 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.support.DefaultBatchConfiguration;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -17,11 +18,10 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
-public class HelloJobConfiguration {
-    
+public class HelloJobConfiguration extends DefaultBatchConfiguration {
+
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
-
 
     @Bean
     public Job helloJob() {
@@ -38,7 +38,5 @@ public class HelloJobConfiguration {
                 return RepeatStatus.FINISHED;
             }, platformTransactionManager)
             .build();
-                   
     }
-    
 }
