@@ -14,29 +14,23 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import lombok.RequiredArgsConstructor;
-
 @Configuration
-@RequiredArgsConstructor
-public class HelloJobConfiguration extends DefaultBatchConfiguration {
-
-    private final JobRepository jobRepository;
-    private final PlatformTransactionManager platformTransactionManager;
+public class HelloJobConfiguration {
 
     @Bean
-    public Job helloJob() {
+    public Job helloJob(JobRepository jobRepository) {
         return new JobBuilder("helloJob", jobRepository)
-            .start(step())
+            .start(step(jobRepository, null))
             .build();
     }
 
     @Bean
-    public Step step() {
+    public Step step(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
         return new StepBuilder("helloStep", jobRepository)
             .tasklet((contribution, chunkContext) -> {
                 System.out.println("Hello Step");
                 return RepeatStatus.FINISHED;
-            }, platformTransactionManager)
+            }, transactionManager)
             .build();
     }
 }
