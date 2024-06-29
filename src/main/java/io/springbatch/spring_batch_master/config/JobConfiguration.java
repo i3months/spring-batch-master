@@ -33,7 +33,8 @@ public class JobConfiguration {
         return new StepBuilder("step1", jobRepository)
             .tasklet((contribution, chunkContext) -> {
                 System.out.println("ddddd");
-                return RepeatStatus.FINISHED;
+                throw new RuntimeException("step1 fail");
+                // return RepeatStatus.FINISHED;
             }, platformTransactionManager)
             .build();
     }
