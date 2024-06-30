@@ -26,7 +26,7 @@ public class JobListener implements JobExecutionListener {
         if (lastJobExecution != null) {
             for(StepExecution execution : lastJobExecution.getStepExecutions()) {
                 BatchStatus status = execution.getStatus();
-                log.info(status);
+                // log.info(status);
                 //..
             }
         }
