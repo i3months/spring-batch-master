@@ -2,7 +2,9 @@ package io.springbatch.spring_batch_master.config;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.repeat.RepeatStatus;
@@ -27,6 +29,16 @@ public class JobConfiguration {
         .build();
     }
 
+    @Bean
+    public Flow flow() {
+        FlowBuilder<Flow> flowBuilder = new FlowBuilder<>("flow"); // step = flow
+        flowBuilder.start(step3())            
+            .next(step4())
+            .end();
+
+        return flowBuilder.build();
+    }
+
 
     @Bean
     public Step step1() {
@@ -47,5 +59,27 @@ public class JobConfiguration {
             }, platformTransactionManager)
             .build();
     }
+
+    @Bean
+    public Step step3() {
+        return new StepBuilder("step1", jobRepository)
+            .tasklet((contribution, chunkContext) -> {
+                System.out.println("dddddddd");
+                return RepeatStatus.FINISHED;
+            }, platformTransactionManager)
+            .build();
+    }
+
+    @Bean
+    public Step step4() {
+        return new StepBuilder("step1", jobRepository)
+            .tasklet((contribution, chunkContext) -> {
+                System.out.println("dddddddd");
+                return RepeatStatus.FINISHED;
+            }, platformTransactionManager)
+            .build();
+    }
+
+
 
 }

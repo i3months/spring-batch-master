@@ -18,6 +18,7 @@ import org.springframework.core.task.TaskExecutor;
 
 public class CustomJobLauncher {
     
+    
     @Autowired
     Job job;
 
