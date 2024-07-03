@@ -1,6 +1,7 @@
 package io.springbatch.spring_batch_master.config;
 
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParametersIncrementer;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -24,9 +25,13 @@ public class JobConfiguration {
     @Bean
     public Job job() {
         return new JobBuilder("job", jobRepository)
-        .start(step1())
-        .next(step2())
-        .build();
+            .start(step1())
+            .next(step2())
+            .incrementer(null)
+            .preventRestart()
+            .validator(null)
+            .listener(null)
+            .build();
     }
 
     @Bean
