@@ -30,7 +30,6 @@ public class JobConfiguration {
             .incrementer(null)
             .preventRestart()
             .validator(null)
-            .listener(null)
             .build();
     }
 
