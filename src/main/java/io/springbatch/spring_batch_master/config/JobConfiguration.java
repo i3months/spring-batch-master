@@ -6,6 +6,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.job.flow.Flow;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.repeat.RepeatStatus;
@@ -27,7 +28,7 @@ public class JobConfiguration {
         return new JobBuilder("job", jobRepository)
             .start(step1())
             .next(step2())
-            .incrementer(null)
+            .incrementer(new RunIdIncrementer())
             .preventRestart()
             .validator(new CustomJobParameterValidator())
             .build();
