@@ -29,7 +29,7 @@ public class JobConfiguration {
             .next(step2())
             .incrementer(null)
             .preventRestart()
-            .validator(null)
+            .validator(new CustomJobParameterValidator())
             .build();
     }
 
