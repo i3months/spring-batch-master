@@ -9,6 +9,10 @@ import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.NonTransientResourceException;
+import org.springframework.batch.item.ParseException;
+import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -58,10 +62,15 @@ public class JobConfiguration {
     @Bean
     public Step step2() {
         return new StepBuilder("step1", jobRepository)
-            .tasklet((contribution, chunkContext) -> {
-                System.out.println("dddddddd");
-                return RepeatStatus.FINISHED;
-            }, platformTransactionManager)
+            .chunk(3, platformTransactionManager)
+            .reader(new ItemReader<Object>() {
+                @Override
+                public Object read()
+                        throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+                    return null;
+                }
+                
+            })
             .build();
     }
 
