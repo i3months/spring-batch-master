@@ -26,6 +26,7 @@ public class JobConfiguration {
     
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
+    private int count = 0;
 
     @Bean
     public Job job() {
@@ -53,9 +54,15 @@ public class JobConfiguration {
     public Step taskStep() {
         return new StepBuilder("taskStep", jobRepository)
             .tasklet((contribution, chunkContext) -> {
-                System.out.println("TaskStep");
-                return RepeatStatus.FINISHED;
-            }, platformTransactionManager)
+                System.out.println("taskletSTep");                
+                if (count < 5) {
+                    count++;
+                    return RepeatStatus.CONTINUABLE;
+                } else {
+                    return RepeatStatus.FINISHED;
+                }
+            }, platformTransactionManager)            
+            .allowStartIfComplete(true)
             .build();
     }
 
@@ -66,6 +73,7 @@ public class JobConfiguration {
             .reader(() -> null)
             .processor(item -> "_" + item)
             .writer(items -> items.forEach(System.out::println))
+            .startLimit(5)
             .build();
     }
 
