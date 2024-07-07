@@ -32,10 +32,10 @@ public class JobConfiguration {
     public Job job() {
         return new JobBuilder("job", jobRepository)
             .start(step1())
-            .next(step2())
-            .incrementer(new RunIdIncrementer())
-            .preventRestart()
-            .validator(new CustomJobParameterValidator())
+            .on("COMPLETED").to(step3())
+            .from(step1())
+            .on("FAILED").to(step2())
+            .end()
             .build();
     }
 
