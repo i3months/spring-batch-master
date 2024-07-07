@@ -50,27 +50,22 @@ public class JobConfiguration {
 
 
     @Bean
-    public Step step1() {
-        return new StepBuilder("step1", jobRepository)
+    public Step taskStep() {
+        return new StepBuilder("taskStep", jobRepository)
             .tasklet((contribution, chunkContext) -> {
-                throw new RuntimeException("step1 fail");
-                // return RepeatStatus.FINISHED;
+                System.out.println("TaskStep");
+                return RepeatStatus.FINISHED;
             }, platformTransactionManager)
             .build();
     }
 
     @Bean
-    public Step step2() {
-        return new StepBuilder("step1", jobRepository)
+    public Step chunkStep() {
+        return new StepBuilder("chunkStep", jobRepository)
             .chunk(3, platformTransactionManager)
-            .reader(new ItemReader<Object>() {
-                @Override
-                public Object read()
-                        throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-                    return null;
-                }
-                
-            })
+            .reader(() -> null)
+            .processor(item -> "_" + item)
+            .writer(items -> items.forEach(System.out::println))
             .build();
     }
 
