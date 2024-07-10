@@ -1,6 +1,7 @@
 package io.springbatch.spring_batch_master.config;
 
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.job.flow.JobExecutionDecider;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,5 +33,20 @@ public class TransitionConfig {
                 .to(step5())
                 .end()
             .build();
+    }
+
+    @Bean
+    public Job job() {
+        return new JobBuilder("job", jobRepository)
+            .start(step())
+            .next(decider)
+            .from(decider()).on("FIRST").to(firstStep())
+            .from(decider()).on("SECOND").(secndStep())
+            .end()
+            .build();
+    }
+
+    public JobExecutionDecider decider() {
+        return new CustomDecider();
     }
 }
