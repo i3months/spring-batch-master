@@ -46,6 +46,8 @@ public class JobConfiguration {
             .next(step4())
             .end();
 
+        flowBuilder.getClass();
+
         return flowBuilder.build();
     }
 
