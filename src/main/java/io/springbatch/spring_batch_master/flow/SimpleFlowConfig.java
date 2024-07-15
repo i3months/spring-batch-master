@@ -1,10 +1,14 @@
 package io.springbatch.spring_batch_master.flow;
 
+import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.boot.autoconfigure.batch.BatchProperties.Job;
 import org.springframework.context.annotation.Bean;
+import org.springframework.transaction.PlatformTransactionManager;
 
 public class SimpleFlowConfig {
 
@@ -27,5 +31,39 @@ public class SimpleFlowConfig {
         builder.build();
     }
 
-    
+    @Bean
+    public Step step1(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+        return new StepBuilder("helloStep", jobRepository)
+            .tasklet((contribution, chunkContext) -> {
+                return RepeatStatus.FINISHED;
+            }, transactionManager)
+            .build();
+    }
+
+    @Bean
+    public Step step2(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+        return new StepBuilder("helloStep", jobRepository)
+            .tasklet((contribution, chunkContext) -> {
+                return RepeatStatus.FINISHED;
+            }, transactionManager)
+            .build();
+    }
+
+    @Bean
+    public Step step3(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+        return new StepBuilder("helloStep", jobRepository)
+            .tasklet((contribution, chunkContext) -> {
+                return RepeatStatus.FINISHED;
+            }, transactionManager)
+            .build();
+    }
+
+    @Bean
+    public Step step4(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+        return new StepBuilder("helloStep", jobRepository)
+            .tasklet((contribution, chunkContext) -> {
+                return RepeatStatus.FINISHED;
+            }, transactionManager)
+            .build();
+    }
 }
