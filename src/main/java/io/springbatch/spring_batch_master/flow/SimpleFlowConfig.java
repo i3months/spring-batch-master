@@ -1,5 +1,6 @@
 package io.springbatch.spring_batch_master.flow;
 
+import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -20,13 +21,28 @@ public class SimpleFlowConfig {
     private final PlatformTransactionManager platformTransactionManager;
 
     @Bean
-    public org.springframework.batch.core.Job job(JobRepository jobRepository) {
+    public Job job(JobRepository jobRepository) {
         return new JobBuilder("helloJob", jobRepository)
             .start(step1(jobRepository, platformTransactionManager))
             .on("COMPLETED").to(step2(jobRepository, platformTransactionManager))
             .from(step1(jobRepository, platformTransactionManager))            
             .on("FAILED").to(flow())
             .end()
+            .build();
+    }
+
+    @Bean
+    public Job flowStepJob() {
+        return new JobBuilder("flowJob", jobRepository)
+        .start(flowStep())
+        .next(step3(jobRepository, platformTransactionManager))
+        .build();
+    }
+
+    @Bean
+    public Step flowStep() {
+        return new StepBuilder("flowStep", jobRepository)
+            .flow(flow())
             .build();
     }
     
@@ -76,4 +92,6 @@ public class SimpleFlowConfig {
             }, transactionManager)
             .build();
     }
+
+
 }
