@@ -2,6 +2,8 @@ package io.springbatch.spring_batch_master.flow;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.JobScope;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.job.flow.Flow;
@@ -40,6 +42,7 @@ public class SimpleFlowConfig {
     }
 
     @Bean
+    @JobScope
     public Step flowStep() {
         return new StepBuilder("flowStep", jobRepository)
             .flow(flow())
