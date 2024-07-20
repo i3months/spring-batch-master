@@ -2,6 +2,7 @@ package io.springbatch.spring_batch_master.flow;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.FlowBuilder;
@@ -9,7 +10,9 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -61,12 +64,22 @@ public class SimpleFlowConfig {
     }
 
     @Bean
-    public Step step1(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+    @JobScope
+    public Step step1(@Value("#{jobParameters['message']}") String message, JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+        System.out.println(message + "aaaa");
         return new StepBuilder("helloStep", jobRepository)
-            .tasklet((contribution, chunkContext) -> {
-                return RepeatStatus.FINISHED;
-            }, transactionManager)
+            .tasklet(tasklet1(null), transactionManager)
             .build();
+    }
+
+    @Bean
+    @StepScope
+    public Tasklet tasklet1(@Value("#{jobExecutionContext['name']}") String name) {
+        System.out.println("name" + name);
+        return (StepContribution, chunkContext) -> {
+            System.out.println();
+            return RepeatStatus.FINISHED;
+        };
     }
 
     @Bean
