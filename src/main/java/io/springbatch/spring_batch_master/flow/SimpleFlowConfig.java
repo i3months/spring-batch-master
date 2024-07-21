@@ -1,6 +1,8 @@
 package io.springbatch.spring_batch_master.flow;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -22,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import io.springbatch.spring_batch_master.config.CustomItemStreamReader;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -91,6 +94,17 @@ public class SimpleFlowConfig {
                 
             })
             .build();
+    }
+
+
+    public CustomItemStreamReader itemReader() {
+        List<String> items = new ArrayList<>();
+
+        for(int i=0; i<10; i++) {
+            items.add("item" + String.valueOf(i));
+            
+        }
+        return new CustomItemStreamReader(items);
     }
 
     @Bean
