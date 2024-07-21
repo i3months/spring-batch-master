@@ -1,5 +1,7 @@
 package io.springbatch.spring_batch_master.flow;
 
+import java.util.Arrays;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepContribution;
@@ -11,6 +13,10 @@ import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.item.Chunk;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -66,9 +72,24 @@ public class SimpleFlowConfig {
     @Bean
     @JobScope
     public Step step1(@Value("#{jobParameters['message']}") String message, JobRepository jobRepository, PlatformTransactionManager transactionManager) {
-        System.out.println(message + "aaaa");
-        return new StepBuilder("helloStep", jobRepository)
-            .tasklet(tasklet1(null), transactionManager)
+        System.out.println(message);
+        return new StepBuilder("STEP1", jobRepository)
+            .<String, String>chunk(5, transactionManager)
+            .reader(new ListItemReader<>(Arrays.asList("item1", "item2", "item3", "item4", "item5")))
+            .processor(new ItemProcessor<String, String>() {
+                @Override
+                public String process(String item) throws Exception {
+                    Thread.sleep(300);
+                    return "my" + item;
+                }
+            })
+            .writer(new ItemWriter<String>() {
+                @Override
+                public void write(Chunk<? extends String> items) throws Exception {
+                    System.out.println(items);
+                }
+                
+            })
             .build();
     }
 
