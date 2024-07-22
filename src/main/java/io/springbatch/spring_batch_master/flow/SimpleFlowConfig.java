@@ -75,7 +75,6 @@ public class SimpleFlowConfig {
     @Bean
     @JobScope
     public Step step1(@Value("#{jobParameters['message']}") String message, JobRepository jobRepository, PlatformTransactionManager transactionManager) {
-        System.out.println(message);
         return new StepBuilder("STEP1", jobRepository)
             .<String, String>chunk(5, transactionManager)
             .reader(new ListItemReader<>(Arrays.asList("item1", "item2", "item3", "item4", "item5")))
