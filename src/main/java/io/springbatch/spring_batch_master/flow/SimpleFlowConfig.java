@@ -17,14 +17,19 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import io.springbatch.spring_batch_master.config.CustomItemStreamReader;
+import io.springbatch.spring_batch_master.config.Customer;
+import io.springbatch.spring_batch_master.config.CustomerFieldSetMapper;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -140,6 +145,18 @@ public class SimpleFlowConfig {
             .tasklet((contribution, chunkContext) -> {
                 return RepeatStatus.FINISHED;
             }, transactionManager)
+            .build();
+    }
+
+    @Bean
+    public ItemReader itemReaderReturn() {
+        return new FlatFileItemReaderBuilder<Customer>()
+            .name("flatfile")
+            .resource(new ClassPathResource("/customer.csv"))
+            .fieldSetMapper(new CustomerFieldSetMapper())
+            .linesToSkip(1)
+            .delimited().delimiter(",")
+            .names("name", "age", "year")
             .build();
     }
 
