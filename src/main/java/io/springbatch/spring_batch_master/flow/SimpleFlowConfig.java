@@ -19,6 +19,8 @@ import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.database.JdbcCursorItemReader;
+import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.batch.repeat.RepeatStatus;
@@ -157,6 +159,17 @@ public class SimpleFlowConfig {
             .linesToSkip(1)
             .delimited().delimiter(",")
             .names("name", "age", "year")
+            .build();
+    }
+
+    @Bean
+    public JdbcCursorItemReader<Object> itemReaderReturn1() {
+        return new JdbcCursorItemReaderBuilder<>()
+            .name("jdbcCursor")
+            .fetchSize(10)
+            .sql("SELECT * FROM CUSTOMER ORDER BY C_ID ASC")
+            .beanRowMapper(null)
+            .dataSource(null)
             .build();
     }
 
