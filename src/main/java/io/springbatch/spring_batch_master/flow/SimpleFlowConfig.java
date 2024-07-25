@@ -20,7 +20,10 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
+import org.springframework.batch.item.database.PagingQueryProvider;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
+import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
+import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.batch.repeat.RepeatStatus;
@@ -171,6 +174,25 @@ public class SimpleFlowConfig {
             .beanRowMapper(null)
             .dataSource(null)
             .build();
+    }
+
+    @Bean
+    public ItemReader<? extends String> customItemReader2() {
+        return new JdbcPagingItemReaderBuilder()
+            .name("jdbc")
+            .pageSize(10)
+            .dataSource(null)
+            .rowMapper(null)
+            .queryProvider(null)
+            .build();
+    }
+
+    @Bean
+    public PagingQueryProvider createQueryProvider() {
+        SqlPagingQueryProviderFactoryBean queryProvider = new SqlPagingQueryProviderFactoryBean();
+        queryProvider.setDataSource(null);
+        queryProvider.setSelectClause(null);
+        return null;
     }
 
 
