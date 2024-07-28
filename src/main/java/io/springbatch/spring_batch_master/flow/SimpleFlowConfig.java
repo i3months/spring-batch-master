@@ -25,12 +25,15 @@ import org.springframework.batch.item.database.PagingQueryProvider;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
 import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
+import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import io.springbatch.spring_batch_master.config.CustomItemStreamReader;
@@ -153,6 +156,22 @@ public class SimpleFlowConfig {
                 return RepeatStatus.FINISHED;
             }, transactionManager)
             .build();
+    }
+
+    @Bean
+    public ItemWriter<? super Customer> customItemWriter() {
+        return new FlatFileItemWriterBuilder<>()
+            .name("flatFileWriter")        
+            .delimited()
+            .delimiter("|")
+            .build();
+            
+    }
+
+    @Bean
+    public ItemReader<? extends Customer> customItemReaderI() {
+        List<Customer> customers = Arrays.asList(new Customer());
+        return  null;
     }
 
     @Bean
