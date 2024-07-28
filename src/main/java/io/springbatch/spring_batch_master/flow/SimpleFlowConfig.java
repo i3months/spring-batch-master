@@ -19,6 +19,7 @@ import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.adapter.ItemReaderAdapter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.PagingQueryProvider;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
@@ -33,6 +34,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import io.springbatch.spring_batch_master.config.CustomItemStreamReader;
+import io.springbatch.spring_batch_master.config.CustomService;
 import io.springbatch.spring_batch_master.config.Customer;
 import io.springbatch.spring_batch_master.config.CustomerFieldSetMapper;
 import lombok.RequiredArgsConstructor;
@@ -151,6 +153,19 @@ public class SimpleFlowConfig {
                 return RepeatStatus.FINISHED;
             }, transactionManager)
             .build();
+    }
+
+    @Bean
+    public ItemReader<String> itemReaderAdapter() {
+        ItemReaderAdapter<String> reader = new ItemReaderAdapter<>();
+        reader.setTargetObject(customService());
+        reader.setTargetMethod("customRead");
+        return reader;
+    }
+
+    @Bean
+    public Object customService() {
+        return new CustomService<>();
     }
 
     @Bean
