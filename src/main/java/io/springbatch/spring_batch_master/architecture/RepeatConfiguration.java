@@ -26,50 +26,16 @@ public class RepeatConfiguration {
     public Step step1(JobRepository jobRepository, PlatformTransactionManager transactionManager) throws Exception {
         return new StepBuilder("step1", jobRepository)
             .<String, String>chunk(5, transactionManager)
-            .reader(new ItemReader<>() {
-                int i=0;
-                @Override 
-                public String read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-                    i++;
-                    return i>3 ? null : "itm" + i;
-                }
-            })
-            .processor(new ItemProcessor<String ,String>() {                                
-                
-                @Override
-                public String process(String item) throws Exception {
-
-                    RepeatTemplate repeatTemplate = new RepeatTemplate();
-                
-                    repeatTemplate.setCompletionPolicy(new SimpleCompletionPolicy(3));
-                    repeatTemplate.setCompletionPolicy(new TimeoutTerminationPolicy(3000));
-
-                    CompositeCompletionPolicy completionPolicy = new CompositeCompletionPolicy();
-                    CompletionPolicy[] completionPolicies = new CompletionPolicy[]{
-                        new SimpleCompletionPolicy(3),
-                        new TimeoutTerminationPolicy(3000)
-                    };
-                    
-                    completionPolicy.setPolicies(completionPolicies);
-                    repeatTemplate.setCompletionPolicy(completionPolicy);
-
-                    repeatTemplate.setExceptionHandler(new SimpleLimitExceptionHandler(3));
-                    
-
-                    repeatTemplate.iterate(new RepeatCallback() {
-                        @Override
-                        public RepeatStatus doInIteration(RepeatContext context) throws Exception {
-                            System.out.println("testing...");
-                            return RepeatStatus.CONTINUABLE;
-                        }
-                        
-                    });
-
-                    return item;
-                }
-            })
-            .writer(items -> System.out.println(items))
+            .reader(itemReader())
+            .processor(itemProcessor())
+            .writer(itemWriter())
+            .faultTolerant()
+            .skip(null)
+            .skipLimit(4)
+            .skipPolicy(null)
+            .retry(null)
+            .retryLimit(2)
+            .retryPolicy(null)
             .build();
-            
     }
 }
